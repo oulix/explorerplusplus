@@ -109,13 +109,20 @@ void Explorerplusplus::InitializeBookmarks(void)
 
 	LoadString(m_hLanguageModule,IDS_BOOKMARKS_ALLBOOKMARKS,szTemp,SIZEOF_ARRAY(szTemp));
 	m_bfAllBookmarks = CBookmarkFolder::CreateNew(szTemp, RootGuid);
-
+	
+	/*
 	GUID ToolbarGuid;
 	UuidFromString(reinterpret_cast<RPC_WSTR>(NBookmarkHelper::TOOLBAR_GUID),&ToolbarGuid);
 	LoadString(m_hLanguageModule,IDS_BOOKMARKS_BOOKMARKSTOOLBAR,szTemp,SIZEOF_ARRAY(szTemp));
 	CBookmarkFolder bfBookmarksToolbar = CBookmarkFolder::Create(szTemp,ToolbarGuid);
 	m_bfAllBookmarks->InsertBookmarkFolder(bfBookmarksToolbar);
-	m_guidBookmarksToolbar = bfBookmarksToolbar.GetGUID();
+	m_guidBookmarksToolbar = bfBookmarksToolbar.GetGUID(); 
+	*/
+	
+	std::wstring strKey = L"Software\\Explorer++\\Bookmarks\\BookmarkFolder_0";
+    	CBookmarkFolder bfBookmarksToolbar = CBookmarkFolder::UnserializeFromRegistry(strKey);
+	m_bfAllBookmarks->InsertBookmarkFolder(bfBookmarksToolbar);
+    	m_guidBookmarksToolbar = bfBookmarksToolbar.GetGUID();
 
 	GUID MenuGuid;
 	UuidFromString(reinterpret_cast<RPC_WSTR>(NBookmarkHelper::MENU_GUID),&MenuGuid);
