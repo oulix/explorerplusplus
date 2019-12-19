@@ -130,7 +130,8 @@ public:
 
 	FILETIME		GetDateCreated() const;
 	FILETIME		GetDateModified() const;
-
+	
+    	void            	RevomeFromRegistry();
 private:
 
 	CBookmark(const std::wstring &strKey);
