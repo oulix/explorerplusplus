@@ -260,7 +260,12 @@ void CBookmarksToolbar::OnRightClickMenuItemSelected(int menuItemId, const Varia
 		break;
 
 	case IDM_BT_DELETE:
-		/* TODO: Handle menu item. */
+	{
+		if (variantBookmark.type() == typeid(CBookmark)) {
+			const CBookmark &bookmark = boost::get<CBookmark>(variantBookmark);
+			OnBookmarkRemoved(bookmark.GetGUID());
+		}
+    }
 		break;
 
 	case IDM_BT_PROPERTIES:
