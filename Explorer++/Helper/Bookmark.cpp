@@ -73,6 +73,39 @@ void CBookmark::InitializeFromRegistry(const std::wstring &strKey)
 	NRegistrySettings::ReadDwordFromRegistry(hKey, _T("DateModifiedHigh"), &m_ftModified.dwHighDateTime);
 }
 
+void CBookmark::RevomeFromRegistry()
+{
+    HKEY hKey;
+    std::wstring strKey = L"Software\\Explorer++\\Bookmarks\\BookmarkFolder_0";
+
+    GUID guid = m_guid;
+    TCHAR guidString[128];
+    StringFromGUID2(m_guid, guidString, SIZEOF_ARRAY(guidString));
+
+    LONG lRes = RegOpenKeyEx(HKEY_CURRENT_USER, strKey.c_str(), 0, KEY_READ, &hKey);
+    if (lRes != ERROR_SUCCESS) return;
+
+    TCHAR szSubKey[256];
+    const int MAXBookMark = 100;
+    for (int iItem = 0; iItem < MAXBookMark; iItem++) {
+        StringCchPrintf(szSubKey, SIZEOF_ARRAY(szSubKey), _T("%s\\Bookmark_%d"), strKey.c_str(), iItem);
+
+        lRes = RegOpenKeyEx(HKEY_CURRENT_USER, szSubKey, 0, KEY_READ, &hKey);
+        if (lRes == ERROR_SUCCESS) {
+            std::wstring stringGuid;
+            NRegistrySettings::ReadStringFromRegistry(hKey, _T("GUID"), stringGuid);
+
+            int ret = stringGuid.compare(guidString);
+            if (ret==0) {
+                LONG lResult = RegDeleteKey(HKEY_CURRENT_USER, szSubKey);
+                RegCloseKey(hKey);
+                break;
+            }
+        }
+        RegCloseKey(hKey);
+    }
+}
+
 void CBookmark::SerializeToRegistry(const std::wstring &strKey)
 {
 	HKEY hKey;
